@@ -48,7 +48,10 @@ func (logs requestLogs) delete(id string) {
 
 func (logs requestLogs) print(msecBoundary int) {
 	for _, p := range logs.toSortedArray() {
-		p.value.print(p.key, msecBoundary)
+		if p.value.msec <= msecBoundary {
+			return
+		}
+		p.value.print(p.key)
 	}
 }
 
@@ -62,10 +65,7 @@ func (logs requestLogs) toSortedArray() pairs {
 }
 
 /*** requestLog's methods ***/
-func (log *requestLog) print(reqID string, msecBoundary int) {
-	if log.msec <= msecBoundary {
-		return
-	}
+func (log *requestLog) print(reqID string) {
 	fmt.Printf("\n===TOTAL TIME[%d msec] req-id[%s]\n", log.msec, reqID)
 	line := log.method
 	if log.params != "" {
