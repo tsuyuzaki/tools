@@ -100,15 +100,16 @@ func (log *requestLog) printQueries() {
 			cnt = log.limitOneQueries[sql]
 			if alreadyLogged[sql] {
 				continue
-			} else {
-				alreadyLogged[sql] = true
 			}
+			alreadyLogged[sql] = true
 		}
-		fmt.Printf("  (%.1f msec),%s", q.msec, sql)
-		if cnt > 1 {
-			fmt.Printf(" [CALLED %d TIMES]", cnt)
+		line := fmt.Sprintf("  (%.1f msec),", q.msec)
+		if cnt == 1 {
+			line += q.sql
+		} else {
+			line += fmt.Sprintf("%s [CALLED %d TIMES]", sql, cnt)
 		}
-		fmt.Printf("\n")
+		fmt.Println(line)
 	}
 }
 
