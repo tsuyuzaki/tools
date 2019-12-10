@@ -1,3 +1,11 @@
+/**
+ * golang install (mac)
+ * $ brew install go
+ *
+ * tool の実行
+ * go run *.go [log ファイル] [数値 [msec] (省略化)]
+ * 数値 [msec] を指定した場合は、その値より遅いリクエストのみ出力します。
+ */
 package main
 
 import (
