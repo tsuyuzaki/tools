@@ -110,7 +110,7 @@ func appendSqlQuery(log *requestLog, line string) bool {
 	if !ok {
 		return false
 	}
-	sql := "SELECT " + str
+	sql := queryIdentifier + str
 	sqlQuery := &sqlQuery{msec, sql}
 	log.sqlQueries = append(log.sqlQueries, sqlQuery)
 

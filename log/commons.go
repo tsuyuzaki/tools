@@ -8,7 +8,7 @@ import (
 const methodIdentifierPrefix = "Started "
 const actionIdentifier = "Processing by "
 const paramsIdentifier = "Parameters: "
-const queryIdentifier = "SELECT  "
+const queryIdentifier = "SELECT "
 const resultIdentifier = "Completed "
 const limitOne = "LIMIT 1"
 
