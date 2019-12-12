@@ -35,7 +35,7 @@ func main() {
 	s := bufio.NewScanner(f)
 	for s.Scan() {
 		line := s.Text()
-		ok, id := getStrPartWithPrePostText(line, " -- : [", "]")
+		id, ok := getStrPartWithPrePostText(line, " -- : [", "]")
 		if !ok {
 			continue
 		}
@@ -76,7 +76,7 @@ func fillRequestLog(s *bufio.Scanner, id, line string) bool {
 }
 
 func fillMethod(log *requestLog, id, line string) bool {
-	ok, method := getStrPartWithPrePostText(line, methodIdentifierPrefix, " for ")
+	method, ok := getStrPartWithPrePostText(line, methodIdentifierPrefix, " for ")
 	if !ok {
 		return false
 	}
@@ -90,7 +90,7 @@ func fillMethod(log *requestLog, id, line string) bool {
 }
 
 func fillStringValue(line string, value *string, preText string) bool {
-	ok, got := getStrPartWithPreText(line, preText)
+	got, ok := getStrPartWithPreText(line, preText)
 	if ok {
 		*value = got
 	}
@@ -98,7 +98,7 @@ func fillStringValue(line string, value *string, preText string) bool {
 }
 
 func appendSqlQuery(log *requestLog, line string) bool {
-	ok, msecStr := getStrPartWithPrePostText(line, " (", "ms)")
+	msecStr, ok := getStrPartWithPrePostText(line, " (", "ms)")
 	if !ok {
 		return false
 	}
@@ -106,7 +106,7 @@ func appendSqlQuery(log *requestLog, line string) bool {
 	if err != nil {
 		return false
 	}
-	ok, str := getStrPartWithPreText(line, queryIdentifier)
+	str, ok := getStrPartWithPreText(line, queryIdentifier)
 	if !ok {
 		return false
 	}
@@ -128,12 +128,12 @@ func appendSqlQuery(log *requestLog, line string) bool {
 }
 
 func fillResult(log *requestLog, line string) bool {
-	ok, res := getStrPartWithPreText(line, resultIdentifier)
+	res, ok := getStrPartWithPreText(line, resultIdentifier)
 	if !ok {
 		return false
 	}
 	log.result = res
-	ok, msecStr := getStrPartWithPrePostText(res, " in ", "ms ")
+	msecStr, ok := getStrPartWithPrePostText(res, " in ", "ms ")
 	if !ok {
 		return false
 	}

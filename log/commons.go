@@ -24,24 +24,24 @@ func replaceNumber(sqlQuery string) string {
 	return strings.Join(splitted, " ")
 }
 
-func getStrPartWithPrePostText(line, preText, postText string) (bool, string) {
-	ok, str := getStrPartWithPreText(line, preText)
+func getStrPartWithPrePostText(line, preText, postText string) (string, bool) {
+	str, ok := getStrPartWithPreText(line, preText)
 	if !ok {
-		return false, ""
+		return "", false
 	}
 	pos := strings.Index(str, postText)
 	if pos == -1 {
-		return false, ""
+		return "", false
 	}
-	return true, str[:pos]
+	return str[:pos], true
 }
 
-func getStrPartWithPreText(line, preText string) (bool, string) {
+func getStrPartWithPreText(line, preText string) (string, bool) {
 	pos := strings.Index(line, preText)
 	if pos == -1 {
-		return false, ""
+		return "", false
 	}
-	return true, line[pos+len(preText):]
+	return line[pos+len(preText):], true
 }
 
 func isMethod(line string) bool {
