@@ -12,6 +12,7 @@ type sqlQuery struct {
 }
 
 type requestLog struct {
+	reqID			string         // request ID。
 	msec            int            // request にかかったトータル時間。
 	method          string         // OPITONS を除いたメソッド情報。 ex) POST "/deals"
 	action          string         // controller のアクション。
@@ -25,18 +26,13 @@ type requestLog struct {
 
 type requestLogs map[string]*requestLog
 
-type pair struct { // request の msec でソートするための構造体。
-	key   string
-	value *requestLog
-}
-
-type pairs []*pair // request の msec でソートするための配列。
+type sortableRequestLogs []*requestLog // requestLog の msec でソートするための配列。
 
 /*** requestLogs's methods ***/
 func (logs requestLogs) get(id string) *requestLog {
 	log := logs[id]
 	if log == nil {
-		log = &requestLog{}
+		log = &requestLog{reqID: id}
 		logs[id] = log
 	}
 	return log
@@ -47,26 +43,26 @@ func (logs requestLogs) delete(id string) {
 }
 
 func (logs requestLogs) print(msecBoundary int) {
-	for _, p := range logs.toSortedArray() {
-		if p.value.msec <= msecBoundary {
+	for _, log := range logs.toSortedArray() {
+		if log.msec <= msecBoundary {
 			return
 		}
-		p.value.print(p.key)
+		log.print()
 	}
 }
 
-func (logs requestLogs) toSortedArray() pairs {
-	ps := pairs{}
-	for key, value := range logs {
-		ps = append(ps, &pair{key, value})
+func (logs requestLogs) toSortedArray() sortableRequestLogs {
+	sortableLogs := sortableRequestLogs{}
+	for _, log := range logs {
+		sortableLogs = append(sortableLogs, log)
 	}
-	sort.Sort(ps)
-	return ps
+	sort.Sort(sortableLogs)
+	return sortableLogs
 }
 
 /*** requestLog's methods ***/
-func (log *requestLog) print(reqID string) {
-	fmt.Printf("\n===TOTAL TIME[%d msec] req-id[%s]\n", log.msec, reqID)
+func (log *requestLog) print() {
+	fmt.Printf("\n===TOTAL TIME[%d msec] req-id[%s]\n", log.msec, log.reqID)
 	line := log.method
 	if log.params != "" {
 		line += "," + log.params
@@ -97,11 +93,11 @@ func (log *requestLog) printQueries() {
 		sql := q.sql
 		if strings.Contains(sql, limitOne) {
 			sql = replaceNumber(sql)
-			cnt = log.limitOneQueries[sql]
 			if alreadyLogged[sql] {
 				continue
 			}
 			alreadyLogged[sql] = true
+			cnt = log.limitOneQueries[sql]
 		}
 		line := fmt.Sprintf("  (%.1f msec),", q.msec)
 		if cnt == 1 {
@@ -113,15 +109,15 @@ func (log *requestLog) printQueries() {
 	}
 }
 
-/*** pairs's methods ***/
-func (ps pairs) Len() int {
-	return len(ps)
+/*** sortableRequestLogs's methods ***/
+func (logs sortableRequestLogs) Len() int {
+	return len(logs)
 }
 
-func (ps pairs) Swap(i, j int) {
-	ps[i], ps[j] = ps[j], ps[i]
+func (logs sortableRequestLogs) Swap(i, j int) {
+	logs[i], logs[j] = logs[j], logs[i]
 }
 
-func (ps pairs) Less(i, j int) bool {
-	return ps[i].value.msec > ps[j].value.msec
+func (logs sortableRequestLogs) Less(i, j int) bool {
+	return logs[i].msec > logs[j].msec
 }
