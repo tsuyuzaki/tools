@@ -12,7 +12,7 @@ type sqlQuery struct {
 }
 
 type requestLog struct {
-	reqID			string         // request ID。
+	reqID           string         // request ID。
 	msec            int            // request にかかったトータル時間。
 	method          string         // OPITONS を除いたメソッド情報。 ex) POST "/deals"
 	action          string         // controller のアクション。
