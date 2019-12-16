@@ -26,7 +26,7 @@ type requestLog struct {
 
 type requestLogs map[string]*requestLog
 
-type sortableRequestLogs []*requestLog // requestLog の msec でソートするための配列。
+type sortableRequestLogs []*requestLog // requestLog の msec でソートするためのスライス。
 
 /*** requestLogs's methods ***/
 func (logs requestLogs) get(id string) *requestLog {
