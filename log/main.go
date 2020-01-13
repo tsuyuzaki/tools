@@ -45,7 +45,13 @@ func main() {
 	}
 	msecBoundary := 0
 	if len(os.Args) == 3 {
-		msecBoundary, _ = strconv.Atoi(os.Args[2])
+		opt := os.Args[2]
+		if log, ok := logs[opt]; ok {
+			fmt.Println("hogehoge")
+			log.print()
+			return
+		}
+		msecBoundary, _ = strconv.Atoi(opt)
 	}
 	logs.print(msecBoundary)
 }
