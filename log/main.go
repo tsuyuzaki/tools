@@ -47,7 +47,6 @@ func main() {
 	if len(os.Args) == 3 {
 		opt := os.Args[2]
 		if log, ok := logs[opt]; ok {
-			fmt.Println("hogehoge")
 			log.print()
 			return
 		}
